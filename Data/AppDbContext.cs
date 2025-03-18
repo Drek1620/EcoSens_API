@@ -7,6 +7,7 @@ namespace EcoSens_API.Data
     {
         public AppDbContext(DbContextOptions <AppDbContext> options) : base(options) { }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Empleados> Empleados { get; set; }
         public DbSet<TipoEmpleado> TipoEmpleado { get; set; }
         public DbSet<Area> AreaT { get; set; }
         public DbSet<Conjuntos> Conjuntos { get; set; }

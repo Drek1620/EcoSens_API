@@ -14,6 +14,10 @@ namespace EcoSens_API.Services
             _registrosCollection = database.GetCollection<RegistroContenedor>(config["MongoSettings:CollectionName"]);
         }
 
-        public async Task<List<RegistroContenedor>>
+        public async Task<List<RegistroContenedor>> GetRegistroContenedors(int idContenedor) =>
+            await _registrosCollection.Find(p => p.Id_contenedor == idContenedor).ToListAsync();
+
+        public async Task AgregarRegistros(RegistroContenedor registroContenedor) =>
+            await _registrosCollection.InsertOneAsync(registroContenedor);
     }
 }

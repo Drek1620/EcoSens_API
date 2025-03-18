@@ -4,8 +4,9 @@ namespace EcoSens_API.Models
 {
     public class Conjuntos
     {
-        public int IdConjuntos { get; set; }
+        public int Id { get; set; }
         [Required]
-        public string IP_ESP32 { get; set; }
+        public string Mac_ESP32 { get; set; }
+        public int area_id { get; set; }
     }
 }

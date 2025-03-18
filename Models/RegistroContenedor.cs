@@ -8,8 +8,6 @@ namespace EcoSens_API.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public int Id { get; set; }
-        [BsonElement("id_registro")]
         public int Id_registro { get; set; }
         [BsonElement("id_contenedor")]
         public int Id_contenedor { get; set; }

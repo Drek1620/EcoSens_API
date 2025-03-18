@@ -6,19 +6,12 @@ namespace EcoSens_API.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        public string Nombre { get; set; }
-
-        [Required]
-        public string Apellido { get; set; }
-
-        [Required]
-        public string Telefono { get; set; }
-
         [Required,EmailAddress]
-        public string Email { get; set; }
+        public string Correo { get; set; }
+        [Required]
+        public string Contrasena { get; set; }
 
         [Required]
-        public string Tipo { get; set; }
+        public TipoEmpleado Tipo { get; set; }
     }
 }

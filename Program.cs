@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using EcoSens_API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
 
 //Configurar MongoDB como servicio
-builder.Services.AddSingleton<MongoDbService>();
+builder.Services.AddSingleton<mongoDbService>();
 builder.Services.AddControllers();
 
 

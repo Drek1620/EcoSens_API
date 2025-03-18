@@ -12,6 +12,10 @@ namespace EcoSens_API.Models
         public string Contrasena { get; set; }
 
         [Required]
-        public TipoEmpleado Tipo { get; set; }
+        public int Tipo_id { get; set; }
+
+        // Propiedad de navegación
+        public TipoUsuario Tipo_ { get; set; }
     }
 }
+

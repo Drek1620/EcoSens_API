@@ -4,7 +4,7 @@ namespace EcoSens_API.Models
 {
     public class Contenedores
     {
-        public int Id_Contenedor { get; set; }
+        public int Id { get; set; }
         [Required]
         public decimal Dimensiones { get; set; }
         [Required]

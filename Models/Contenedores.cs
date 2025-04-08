@@ -7,13 +7,9 @@ namespace EcoSens_API.Models
         public int Id { get; set; }
         [Required]
         public decimal Dimensiones { get; set; }
-        [Required]
         public decimal Peso_T { get; set; }
-        [Required]
         public string Estado { get; set; }
-        [Required]
         public int Id_Tipo { get; set; }
-        [Required]
         public int  Id_Conjunto { get; set; }
     }
 }

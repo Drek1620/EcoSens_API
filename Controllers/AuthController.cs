@@ -16,9 +16,9 @@ namespace EcoSens_API.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IConfiguration _config;
-        private readonly mongoDbService _mongoDbService;
+        private readonly MongoDbService _mongoDbService;
 
-        public AuthController(AppDbContext context, IConfiguration config, mongoDbService mongoDbService)
+        public AuthController(AppDbContext context, IConfiguration config, MongoDbService mongoDbService)
         {
             _context = context;
             _config = config;
@@ -26,7 +26,7 @@ namespace EcoSens_API.Controllers
 
         }
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UsuarioLoginRequest request)
+        public IActionResult Login([FromBody] UsuarioLoginRequest request)
         {
             var user = _context.Usuarios.Include(u => u.Tipo_).SingleOrDefault(u => u.Correo == request.Correo && u.Contrasena == u.Contrasena);
             if (user == null)
@@ -35,30 +35,30 @@ namespace EcoSens_API.Controllers
             var token = GenerarToken(user);
 
             //Si es ADMIN, devuelve la lista de trabajadores
-            if(user.Tipo_.Nombre_Tipo == "Administrador")
+            if (user.Tipo_.Nombre_Tipo == "Administrador")
             {
-                var empleados= _context.Empleados.ToList();
+                //var empleados= _context.Empleados.ToList();
                 return Ok(new
                 {
                     token,
                     tipo = user.Tipo_.Nombre_Tipo,
-                    empleados
+                    // empleados
                 });
             }
 
             //**Si es un empleado muestra los conjuntos de contenedores
             if (user.Tipo_.Nombre_Tipo == "Recolector")
             {
-                var conjuntos = _context.Conjuntos.ToList();
+                //var conjuntos = _context.Conjuntos.ToList();
                 return Ok(new
                 {
                     token,
                     tipo = user.Tipo_.Nombre_Tipo,
-                    conjuntos
+                    //conjuntos
                 });
             }
 
-            return BadRequest(new {message = "Rol no reconocido"});
+            return BadRequest(new { message = "Rol no reconocido" });
         }
 
         private string GenerarToken(Usuario user)

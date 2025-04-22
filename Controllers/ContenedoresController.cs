@@ -16,22 +16,21 @@ namespace EcoSens_API.Controllers
 
     [Route("Contenedores")]
     [ApiController]
-    public class ContController : ControllerBase
+    public class ContenedoresController : ControllerBase
     {
 
 
         private readonly AppDbContext _context;
         private readonly IConfiguration _config;
 
-        public ContController(AppDbContext context, IConfiguration config)
+        public ContenedoresController(AppDbContext context, IConfiguration config)
         {
             _context = context;
             _config = config;
 
         }
 
-        [HttpPost("addcont")]
-
+        [HttpPost]
         public IActionResult agregarcontenedor(Contenedores contenedores)
         {
             try
@@ -60,33 +59,7 @@ namespace EcoSens_API.Controllers
             return Ok(contenedores);
         }
 
-
-
-    }
-
-
-
-
-    //borrar contenedor
-
-
-    [Route("contenedores")]
-    [ApiController]
-    public class DelController : ControllerBase
-    {
-
-
-        private readonly AppDbContext _context;
-        private readonly IConfiguration _config;
-
-        public DelController(AppDbContext context, IConfiguration config)
-        {
-            _context = context;
-            _config = config;
-        }
-
         [HttpDelete("{id}")]
-
         public IActionResult editarcontenedor(int id)
         {
             try
@@ -114,86 +87,6 @@ namespace EcoSens_API.Controllers
 
         }
 
-
-
-    }
-
-
-
-
-
-
-    //editar contenedor
-
-
-    [Route("contenedores")]
-    [ApiController]
-    public class EditController : ControllerBase
-    {
-
-
-        private readonly AppDbContext _context;
-        private readonly IConfiguration _config;
-
-        public EditController(AppDbContext context, IConfiguration config)
-        {
-            _context = context;
-            _config = config;
-
-        }
-
-        [HttpPut("{id}")]
-
-        public IActionResult editarcontenedor(int id, Contenedores contenedores)
-        {
-            try
-            {
-
-                var contenedor = _context.Contenedores.FirstOrDefault(contenedor => contenedor.Id == id);
-
-                contenedor.Dimensiones = contenedores.Dimensiones;
-                contenedor.Peso_Total = contenedores.Peso_Total;
-                contenedor.Estado = contenedores.Estado;
-
-
-                _context.SaveChanges();
-
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Ha ocurrido una excepcion");
-            }
-
-            return Ok(contenedores);
-        }
-
-
-
-    }
-
-
-
-
-
-
-
-
-    //obtener contenedores de un conjunto
-
-    [Route("contenedores")]
-    [ApiController]
-    public class ConjuntosController : ControllerBase
-    {
-        private readonly AppDbContext _context;
-        private readonly IConfiguration _config;
-
-        public ConjuntosController(AppDbContext context, IConfiguration config)
-        {
-            _context = context;
-            _config = config;
-        }
-
         [HttpGet("conjunto/{conjunto_id}")]
         public IActionResult datosconjunto(int conjunto_id)
         {
@@ -214,31 +107,30 @@ namespace EcoSens_API.Controllers
                 return BadRequest("Ha ocurrido una excepción");
             }
         }
-    }
 
-
-
-
-
-
-
-
-
-
-
-    //obtener datos de contenedor
-
-    [Route("contenedores")]
-    [ApiController]
-    public class DatosController : ControllerBase
-    {
-        private readonly AppDbContext _context;
-        private readonly IConfiguration _config;
-
-        public DatosController(AppDbContext context, IConfiguration config)
+        [HttpPut("{id}")]
+        public IActionResult editarcontenedor(int id, Contenedores contenedores)
         {
-            _context = context;
-            _config = config;
+            try
+            {
+
+                var contenedor = _context.Contenedores.FirstOrDefault(contenedor => contenedor.Id == id);
+
+                contenedor.Dimensiones = contenedores.Dimensiones;
+                contenedor.Peso_Total = contenedores.Peso_Total;
+                contenedor.Estado = contenedores.Estado;
+
+
+                _context.SaveChanges();
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Ha ocurrido una excepcion - " + ex);
+            }
+
+            return Ok(contenedores);
         }
 
         [HttpGet("{id}")]
@@ -260,12 +152,8 @@ namespace EcoSens_API.Controllers
                 return BadRequest("Ha ocurrido una excepción");
             }
         }
+
     }
-
-
-
-
-
 
 
 }

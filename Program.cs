@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
 
 //Configurar MongoDB como servicio
-builder.Services.AddSingleton<mongoDbService>();
+builder.Services.AddSingleton<MongoDbService>();
 builder.Services.AddControllers();
 
 

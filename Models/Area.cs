@@ -9,7 +9,6 @@ namespace EcoSens_API.Models
         public string Nombre { get; set; }
         [Required]
         public string Descripcion { get; set; }
-        [Required]
-        public int Conjuntos { get; set; }
+    
     }
 }

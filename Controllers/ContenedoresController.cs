@@ -14,7 +14,7 @@ namespace EcoSens_API.Controllers
 
     //agregar contenedores 
 
-    [Route("Contenedores")]
+    [Route("api/Contenedores")]
     [ApiController]
     public class ContenedoresController : ControllerBase
     {
@@ -60,7 +60,7 @@ namespace EcoSens_API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult editarcontenedor(int id)
+        public IActionResult eliminarcontenedor(int id)
         {
             try
             {
@@ -152,6 +152,8 @@ namespace EcoSens_API.Controllers
                 return BadRequest("Ha ocurrido una excepción");
             }
         }
+
+        
 
     }
 

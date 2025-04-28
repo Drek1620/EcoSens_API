@@ -8,5 +8,7 @@ namespace EcoSens_API.Models
         [Required]
         public string Mac_ESP32 { get; set; }
         public int area_id { get; set; }
+        [Required]
+        public string Clavesecreta { get; set; }
     }
 }

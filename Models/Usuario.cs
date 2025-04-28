@@ -16,6 +16,7 @@ namespace EcoSens_API.Models
 
         // Propiedad de navegación
         public TipoUsuario Tipo_ { get; set; }
+
     }
 }
 

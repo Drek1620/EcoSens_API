@@ -17,6 +17,25 @@ namespace EcoSens_API.Services
         public async Task<List<RegistroContenedor>> GetRegistroContenedores(int idContenedor) =>
             await _registrosCollection.Find(p => p.Id_contenedor == idContenedor).ToListAsync();
 
+        public async Task<List<RegistroContenedor>> GetTodosRegistros()
+        {
+            // Trae todos los registros sin filtro
+            return await _registrosCollection.Find(_ => true).ToListAsync();
+        }
+
+        public async Task<List<RegistroContenedor>> GetRegistroContenedoresPorFecha(int idContenedor) =>
+        await _registrosCollection
+        .Find(p => p.Id_contenedor == idContenedor)
+        .SortByDescending(p => p.FechaYHora)
+        .ToListAsync();
+
+        public async Task<RegistroContenedor> GetUltimoRegistroContenedor(int idContenedor) =>
+        await _registrosCollection
+        .Find(p => p.Id_contenedor == idContenedor)
+        .SortByDescending(p => p.FechaYHora)
+        .FirstOrDefaultAsync();
+
+
         public async Task AgregarRegistros(RegistroContenedor registroContenedor) =>
             await _registrosCollection.InsertOneAsync(registroContenedor);
     }

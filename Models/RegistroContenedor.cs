@@ -12,13 +12,13 @@ namespace EcoSens_API.Models
 
         [BsonElement("id_contenedor")]
         public int Id_contenedor { get; set; }
+        [BsonElement("estado")]
+        public string Estado { get; set; }
         [BsonElement("peso")]
-        public decimal Peso { get; set; }
+        public double Peso { get; set; }
         [BsonElement("fecha")]
-        public DateTime Fecha { get; set; }
-        [BsonElement("hora")]
-        public TimeOnly Hora { get; set; }
+        public DateTime FechaYHora { get; set; }
         [BsonElement("altura")]
-        public string Altura { get; set; }
+        public double Altura { get; set; }
     }
 }

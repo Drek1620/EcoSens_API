@@ -14,6 +14,10 @@ namespace EcoSens_API.Models
         [Required]
         public string Telefono { get; set; }
         [Required]
-        public int Area_trabajo { get; set; }
+        public int AreaId { get; set; }
+        public string Foto { get; set; }
+
+        public Usuario Usuario_ { get; set; } = null!;
+        public Area? Area { get; set; }
     }
 }

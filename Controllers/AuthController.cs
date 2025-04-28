@@ -35,30 +35,66 @@ namespace EcoSens_API.Controllers
             var token = GenerarToken(user);
 
             //Si es ADMIN, devuelve la lista de trabajadores
-            if (user.Tipo_.Nombre_Tipo == "Administrador")
+            if (user.Tipo_.Nombre == "Administrador")
             {
                 //var empleados= _context.Empleados.ToList();
                 return Ok(new
                 {
                     token,
-                    tipo = user.Tipo_.Nombre_Tipo,
+                    tipo = user.Tipo_.Nombre,
                     // empleados
                 });
             }
 
             //**Si es un empleado muestra los conjuntos de contenedores
-            if (user.Tipo_.Nombre_Tipo == "Recolector")
+            if (user.Tipo_.Nombre == "Recolector")
             {
                 //var conjuntos = _context.Conjuntos.ToList();
                 return Ok(new
                 {
                     token,
-                    tipo = user.Tipo_.Nombre_Tipo,
+                    tipo = user.Tipo_.Nombre,
                     //conjuntos
                 });
             }
 
             return BadRequest(new { message = "Rol no reconocido" });
+        }
+
+        [HttpPost("esp32")]
+        public IActionResult LoginEsp32([FromBody] UsuarioLoginRequest request)
+        {
+            var esp = _context.Conjuntos.SingleOrDefault(u => u.Mac_ESP32 == request.Correo && u.Clavesecreta == request.Contrasena);
+            if (esp == null)
+                return Unauthorized(new { message = "Credenciales invalidas" });
+
+            var token = GenerarTokenEsp(esp);
+
+            return Ok(new
+            {
+                token
+            });
+        }
+
+        private string GenerarTokenEsp(Conjuntos esp)
+        {
+            var key = Encoding.ASCII.GetBytes(_config["JwtSettings:secretKey"]);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier,esp.Id.ToString()),
+                    new Claim(ClaimTypes.Email, esp.Mac_ESP32),
+                    new Claim(ClaimTypes.Role, "esp32")
+                }),
+                Expires = DateTime.UtcNow.AddHours(24),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
         private string GenerarToken(Usuario user)

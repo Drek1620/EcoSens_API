@@ -6,7 +6,7 @@ namespace EcoSens_API.Models
     {
         public int Id { get; set; }
         [Required]
-        public string Nombre_Tipo { get; set; }
+        public string Nombre { get; set; }
 
         public ICollection<Usuario> Usuarios { get; set; }
     }

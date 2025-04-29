@@ -15,7 +15,7 @@ namespace EcoSens_API.Controllers
 
     //agregar areas
 
-    [Route("Area")]
+    [Route("api/Area")]
     [ApiController]
 
     public class AreasController : ControllerBase
@@ -33,7 +33,7 @@ namespace EcoSens_API.Controllers
         }
 
         [HttpPost]
-        public IActionResult agregararea(Area area)
+        public IActionResult agregararea(AreaDTO area)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace EcoSens_API.Controllers
 
                 };
 
-                _context.Area.Add(area);
+                _context.Area.Add(areas);
                 _context.SaveChanges();
 
 
@@ -89,7 +89,7 @@ namespace EcoSens_API.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult editarArea(int id, Area areas)
+        public IActionResult editarArea(int id, AreaDTO areas)
         {
             try
             {
@@ -113,13 +113,19 @@ namespace EcoSens_API.Controllers
         }
 
 
-        [HttpGet("area")]
-        public List<Area> obtenerareas()
+        [HttpGet()]
+        public List<AreaDTO> obtenerareas()
         {
-         
-                return _context.Area.OrderBy(c => c.Id).ToList();
 
-          
+            return _context.Area
+                    .OrderBy(c => c.Id)
+                    .Select(a => new AreaDTO
+                    {
+                        Id = a.Id,
+                        Nombre = a.Nombre
+                    })
+                    .ToList();
+
         }
 
 

@@ -5,7 +5,7 @@
         public int UsuarioId { get; set; }
         // Usuario
         public string Correo { get; set; }
-        public string Contrasenia { get; set; }
+        public string Contrasena { get; set; }
         public int TipoId { get; set; }
 
         // Empleado

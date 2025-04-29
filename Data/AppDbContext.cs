@@ -10,8 +10,11 @@ namespace EcoSens_API.Data
         public DbSet<Empleados> Empleados { get; set; }
         public DbSet<TipoUsuario> TipoUsuario { get; set; }
         public DbSet<Area> Area { get; set; }
+        public DbSet<AreaDTO> AreaDTO { get; set; }
         public DbSet<Conjuntos> Conjuntos { get; set; }
         public DbSet<Contenedores> Contenedores { get; set; }
         public DbSet<TipoContenedor> TipoContenedor { get; set; }
+        public DbSet<Notificaciones> Notificaciones { get; set; }
+
     }
 }

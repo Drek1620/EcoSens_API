@@ -24,7 +24,7 @@ namespace EcoSens_API.Controllers
                 .Include(x => x.Area)
                 .Select(x => new EmpleadoUsuario
                 {
-                    Id = x.Id,
+                    Id = x.Usuario_id,
                     Nombre = x.Nombre,
                     Apellido = x.Apellido,
                     Correo = x.Usuario_.Correo,
@@ -49,7 +49,7 @@ namespace EcoSens_API.Controllers
                 var usuario = new Usuario
                 {
                     Correo = dto.Correo,
-                    Contrasena = BCrypt.Net.BCrypt.HashPassword(dto.Contrasenia),
+                    Contrasena = BCrypt.Net.BCrypt.HashPassword(dto.Contrasena),
                     Tipo_id = dto.TipoId
                 };
 
@@ -95,7 +95,7 @@ namespace EcoSens_API.Controllers
                     {
                         UsuarioId = e.Usuario_id,
                         Correo = e.Usuario_.Correo,
-                        Contrasenia = e.Usuario_.Contrasena,
+                        Contrasena = e.Usuario_.Contrasena,
                         TipoId = e.Usuario_.Tipo_id,
 
                         // Datos del Empleado
@@ -132,9 +132,9 @@ namespace EcoSens_API.Controllers
 
             // Editar Usuario
             usuario.Correo = dto.Correo ?? usuario.Correo;
-            if (!string.IsNullOrWhiteSpace(dto.Contrasenia))
+            if (!string.IsNullOrWhiteSpace(dto.Contrasena))
             {
-                usuario.Contrasena = BCrypt.Net.BCrypt.HashPassword(dto.Contrasenia);
+                usuario.Contrasena = BCrypt.Net.BCrypt.HashPassword(dto.Contrasena);
             }
             usuario.Tipo_id = dto.TipoId;
 

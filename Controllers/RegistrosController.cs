@@ -79,23 +79,23 @@ namespace EcoSens_API.Controllers
         {
             try
             {
-                // Paso 1: Traer contenedores de SQL Server
+                // Traer contenedores de SQL Server
                 var contenedores = await _context.Contenedores.ToListAsync();
 
-                // Paso 2: Traer registros de MongoDB
-                var registros = await _mongoDbService.GetTodosRegistros(); // <-- que traiga todos los registros
+                // Traer registros de MongoDB
+                var registros = await _mongoDbService.GetTodosRegistros(); // 
 
-                // Paso 3: Juntar en memoria
+                // Juntar en memoria
                 var registrosConTipo = from registro in registros
                                        join contenedor in contenedores
                                        on registro.Id_contenedor equals contenedor.Id
                                        select new
                                        {
-                                           Tipo = contenedor.Tipocont_id, // Asumiendo que así obtienes tipo (plástico o metal)
+                                           Tipo = contenedor.Tipocont_id, //(plástico o metal)
                                            Peso = registro.Peso
                                        };
 
-                // Paso 4: Agrupar y sumar
+                // Agrupar y sumar
                 var resultado = registrosConTipo
                     .GroupBy(r => r.Tipo)
                     .Select(g => new

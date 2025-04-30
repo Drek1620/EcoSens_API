@@ -80,6 +80,7 @@ namespace EcoSens_API.Controllers
         [HttpGet("area/{areaId}")]
         public async Task<IActionResult> ObtenerConjuntosPorArea(int areaId)
         {
+            
             try
             {
                 var conjuntos = await _context.Conjuntos

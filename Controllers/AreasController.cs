@@ -122,7 +122,9 @@ namespace EcoSens_API.Controllers
                     .Select(a => new AreaDTO
                     {
                         Id = a.Id,
-                        Nombre = a.Nombre
+                        Nombre = a.Nombre,
+                        Descripcion = a.Descripcion
+
                     })
                     .ToList();
 

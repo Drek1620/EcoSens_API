@@ -74,7 +74,7 @@ namespace EcoSens_API.Controllers
             }
         }
 
-        [HttpGet("peso-total-por-tipo")]
+        [HttpGet("peso-total-tipo")]
         public async Task<IActionResult> ObtenerPesoTotalPorTipo()
         {
             try

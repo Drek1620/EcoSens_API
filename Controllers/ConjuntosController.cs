@@ -18,13 +18,15 @@ namespace EcoSens_API.Controllers
             _logger = logger;
         }
 
-        [HttpPost("createagregar")]
+        [HttpPost("")]
         public async Task<IActionResult> createConjunto([FromBody] Conjuntos conjunto)
         {
             try
             {
                 if (conjunto == null)
                     return BadRequest(new { mensaje = "Datos incompletos" });
+
+
                 _context.Conjuntos.Add(conjunto);
                 await _context.SaveChangesAsync();
                 return CreatedAtAction(nameof(GetConjuntosById), new { id = conjunto.Id }, conjunto);

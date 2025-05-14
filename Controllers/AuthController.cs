@@ -29,36 +29,21 @@ namespace EcoSens_API.Controllers
         public IActionResult Login([FromBody] UsuarioLoginRequest request)
         {
             var user = _context.Usuarios.Include(u => u.Tipo_).SingleOrDefault(u => u.Correo == request.Correo && u.Contrasena == u.Contrasena);
+            var name = _context.Empleados.SingleOrDefault(x => x.Usuario_id == user.Id);
             if (user == null)
                 return Unauthorized(new { message = "Credenciales invalidas" });
 
             var token = GenerarToken(user);
 
             //Si es ADMIN, devuelve la lista de trabajadores
-            if (user.Tipo_.Nombre == "Administrador")
+            return Ok(new
             {
-                //var empleados= _context.Empleados.ToList();
-                return Ok(new
-                {
-                    token,
-                    tipo = user.Tipo_.Nombre,
-                    // empleados
-                });
-            }
+                token,
+                user.Id,
+                user.Tipo_id,
+                name.Nombre
+            });
 
-            //**Si es un empleado muestra los conjuntos de contenedores
-            if (user.Tipo_.Nombre == "Recolector")
-            {
-                //var conjuntos = _context.Conjuntos.ToList();
-                return Ok(new
-                {
-                    token,
-                    tipo = user.Tipo_.Nombre,
-                    //conjuntos
-                });
-            }
-
-            return BadRequest(new { message = "Rol no reconocido" });
         }
 
         [HttpPost("esp32")]

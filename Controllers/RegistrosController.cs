@@ -49,21 +49,16 @@ namespace EcoSens_API.Controllers
                     return BadRequest(new { mensaje = "Datos de registro." });
 
                 registro.FechaYHora = DateTime.UtcNow; // Registrar la fecha actual
-                var anterirorEstado = await _mongoDbService.GetUltimoRegistroContenedor(registro.Id_contenedor);
+                var contenedor = await _context.Contenedores.FindAsync(registro.Id_contenedor);
+                if (contenedor == null)
+                    return NotFound(new { mensaje = "Contenedor no encontrado" });
 
-                if (anterirorEstado != null && anterirorEstado.Estado != null)
+                if (contenedor.Estado != registro.Estado)
                 {
-                    if (registro.Estado != anterirorEstado.Estado)
-                    {
-                        var contenedor = _context.Contenedores.FirstOrDefault(c => c.Id == registro.Id_contenedor);
+                    await _context.Database.ExecuteSqlRawAsync("UPDATE Contenedores SET estado = {0} WHERE id = {1}", registro.Estado, contenedor.Id);
 
-                        if (contenedor != null)
-                        {
-                            contenedor.Estado = registro.Estado;
-                            _context.SaveChanges();
-                        }
-                    }
                 }
+
 
                 await _mongoDbService.AgregarRegistros(registro);
                 return Ok(new { mensaje = "Registro agregado correctamente.", registro });
@@ -113,6 +108,30 @@ namespace EcoSens_API.Controllers
             }
         }
 
+        [HttpGet("contenedores/peso-total")]
+        public async Task<IActionResult> ObtenerPesoTotalPorContenedor()
+        {
+            try
+            {
+                var registros = await _mongoDbService.GetTodosRegistros();
+
+                var resultado = registros
+                    .GroupBy(r => r.Id_contenedor)
+                    .Select(g => new
+                    {
+                        ContenedorId = g.Key,
+                        PesoTotal = g.Sum(r => r.Peso)
+                    })
+                    .OrderByDescending(r => r.PesoTotal)
+                    .ToList();
+
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al calcular el peso total.", error = ex.Message });
+            }
+        }
 
 
     }

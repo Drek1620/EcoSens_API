@@ -18,7 +18,7 @@ namespace EcoSens_API.Controllers
             _logger = logger;
         }
 
-        [HttpPost("")]
+        [HttpPost("Agregar")]
         public async Task<IActionResult> createConjunto([FromBody] Conjuntos conjunto)
         {
             try

@@ -38,6 +38,34 @@ namespace EcoSens_API.Controllers
             return Ok(empleados);
         }
 
+        [HttpGet("Sesion/{usuarioId}")]
+        public async Task<IActionResult> DatosUsuarioPorId(int usuarioId)
+        {
+            try
+            {
+                var empleado = await _context.Empleados
+                    .Include(e => e.Usuario_)
+                        .ThenInclude(u => u.Tipo_)
+                    .Include(e => e.Area)
+                    .Where(e => e.Usuario_id == usuarioId)
+                    .FirstOrDefaultAsync();
+
+                var notificaciones = await _context.Notificaciones
+                    .Where(n => n.UsuarioId == usuarioId && n.Leido == false)
+                    .OrderByDescending(n => n.Fecha)
+                    .CountAsync();
+
+                if (empleado == null)
+                    return NotFound(new { mensaje = "Usuario o empleado no encontrado." });
+
+                return Ok(new { empleado.Nombre, empleado.AreaId,empleado.Foto,notificaciones });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> CrearUsuarioYEmpleado([FromBody] UsuarioEmpleadoDatos dto)
         {

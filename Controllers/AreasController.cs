@@ -61,7 +61,7 @@ namespace EcoSens_API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult editararea(int id)
+        public IActionResult EliminArarea(int id)
         {
             try
             {

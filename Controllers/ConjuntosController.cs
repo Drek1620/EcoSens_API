@@ -18,32 +18,47 @@ namespace EcoSens_API.Controllers
             _logger = logger;
         }
 
-        [HttpPost("Agregar")]
-        public async Task<IActionResult> createConjunto([FromBody] Conjuntos conjunto)
+        [HttpPost("conjunto-con-contenedores")]
+        public async Task<IActionResult> CrearConjuntoConContenedores([FromBody] ConjuntoConContenedoresDto dto)
         {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
             try
             {
-                if (conjunto == null)
-                    return BadRequest(new { mensaje = "Datos incompletos" });
-
-
-                _context.Conjuntos.Add(conjunto);
-                await _context.SaveChangesAsync();
-                return CreatedAtAction(nameof(GetConjuntosById), new { id = conjunto.Id }, conjunto);
-
-
-            }
-
-            catch (Exception ex)
-            {
-                return StatusCode(500, new
+                // 1. Crear el conjunto
+                var nuevoConjunto = new Conjuntos
                 {
-                    success = false,
-                    message = "Error interno del servidor",
-                    error = ex.Message
+                    Mac_ESP32 = dto.Mac_ESP32,
+                    Clavesecreta = dto.Clavesecreta,
+                    Area_id = dto.Area_id
+                };
+
+                _context.Conjuntos.Add(nuevoConjunto);
+                await _context.SaveChangesAsync();
+
+                // 2. Crear los contenedores con la relación al nuevo conjunto
+                foreach (var cont in dto.Contenedores)
+                {
+                    cont.Conjunto_id = nuevoConjunto.Id;
+                    _context.Contenedores.Add(cont);
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return Ok(new
+                {
+                    conjuntoId = nuevoConjunto.Id,
+                    contenedoresAgregados = dto.Contenedores.Count
                 });
             }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                return StatusCode(500, new { mensaje = "Error al insertar datos.", error = ex.Message });
+            }
         }
+
 
 
 
@@ -77,34 +92,54 @@ namespace EcoSens_API.Controllers
             }
         }
 
-        [HttpGet("area/{areaId}")]
-        public async Task<IActionResult> ObtenerConjuntosPorArea(int areaId)
+        [HttpGet("area/{areaId}/conjuntos-estados")]
+        public async Task<IActionResult> ObtenerConjuntosConEstadosPorArea(int areaId)
         {
-            
             try
             {
+                // Obtener el área primero
+                var area = await _context.Area.FindAsync(areaId);
+                if (area == null)
+                    return NotFound(new { mensaje = "Área no encontrada" });
+
+                // Obtener los conjuntos asociados
                 var conjuntos = await _context.Conjuntos
                     .Where(c => c.Area_id == areaId)
-                    .Include(c => c.Area_)
-                    .Select(c => new
+                    .Select(conjunto => new
                     {
-                        c.Id,
-                        c.Mac_ESP32,
-                        c.Clavesecreta,
-                        Area = c.Area_ != null ? c.Area_.Nombre : null
+                        Id = conjunto.Id,
+                        Mac_ESP32 = conjunto.Mac_ESP32,
+                        Clavesecreta = conjunto.Clavesecreta,
+
+                        Contenedor_plastico = _context.Contenedores
+                            .Where(ct => ct.Conjunto_id == conjunto.Id && ct.Tipocont_id == 1)
+                            .Select(ct => ct.Estado)
+                            .FirstOrDefault(),
+
+                        Contenedor_metal = _context.Contenedores
+                            .Where(ct => ct.Conjunto_id == conjunto.Id && ct.Tipocont_id == 2)
+                            .Select(ct => ct.Estado)
+                            .FirstOrDefault()
                     })
                     .ToListAsync();
 
-                if (conjuntos == null || !conjuntos.Any())
-                    return NotFound(new { mensaje = "No hay conjuntos asociados a esta área." });
+                // Armar respuesta final
+                var resultado = new
+                {
+                    areaId = area.Id,
+                    areaNombre = area.Nombre,
+                    conjuntos = conjuntos
+                };
 
-                return Ok(conjuntos);
+                return Ok(resultado);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { mensaje = "Error interno del servidor.", error = ex.Message });
+                return StatusCode(500, new { mensaje = "Error al obtener conjuntos.", error = ex.Message });
             }
         }
+
+
 
     }
 }

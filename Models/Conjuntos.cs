@@ -12,5 +12,7 @@ namespace EcoSens_API.Models
         public string Clavesecreta { get; set; }
 
         public Area Area_ { get; set; }
+
+        public ICollection<Contenedores> Contenedores { get; set; }
     }
 }

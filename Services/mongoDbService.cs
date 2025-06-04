@@ -35,6 +35,14 @@ namespace EcoSens_API.Services
         .SortByDescending(p => p.FechaYHora)
         .FirstOrDefaultAsync();
 
+        public async Task<List<RegistroContenedor>> GetRegistrosPorContenedor(int id)
+        {
+            var filter = Builders<RegistroContenedor>.Filter.Eq(r => r.Id_contenedor, id);
+            return await _registrosCollection.Find(filter)
+                                    .SortBy(r => r.FechaYHora)
+                                    .ToListAsync();
+        }
+
 
         public async Task AgregarRegistros(RegistroContenedor registroContenedor) =>
             await _registrosCollection.InsertOneAsync(registroContenedor);

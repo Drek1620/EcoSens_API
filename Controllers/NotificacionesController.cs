@@ -90,6 +90,65 @@ namespace EcoSens_API.Controllers
             }
         }
 
+        [HttpGet("notificaciones/hoy/total")]
+        public async Task<IActionResult> ObtenerTotalAlertasDeHoy()
+        {
+            try
+            {
+                var hoy = DateTime.Today;
+                var mañana = hoy.AddDays(1);
+
+                var total = await _context.Notificaciones
+                    .Where(n => n.Fecha >= hoy && n.Fecha < mañana)
+                    .CountAsync();
+
+                return Ok(new
+                {
+                    fecha = hoy.ToString("yyyy-MM-dd"),
+                    total_alertas = total
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al contar las alertas.", error = ex.Message });
+            }
+        }
+
+        [HttpGet("notificaciones/hoy/conjunto/{conjuntoId}")]
+        public async Task<IActionResult> ObtenerNotificacionesUnicasPorFechaExacta(int conjuntoId)
+        {
+            try
+            {
+                var hoy = DateTime.Today;
+                var mañana = hoy.AddDays(1);
+
+                var notificaciones = await _context.Notificaciones
+                    .Where(n => n.Fecha >= hoy && n.Fecha < mañana)
+                    .Join(_context.Contenedores,
+                          noti => noti.ContenedorId,
+                          cont => cont.Id,
+                          (noti, cont) => new
+                          {
+                              Fecha = noti.Fecha,
+                              ConjuntoId = cont.Conjunto_id
+                          })
+                    .Where(x => x.ConjuntoId == conjuntoId)
+                    .GroupBy(x => x.Fecha)
+                    .CountAsync();
+
+                return Ok(new
+                {
+                    fecha = hoy.ToString("yyyy-MM-dd"),
+                    total_alertas = notificaciones
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al obtener notificaciones.", error = ex.Message });
+            }
+        }
+
+
 
     }
 }

@@ -11,5 +11,6 @@ namespace EcoSens_API.Models
         public string Estado { get; set; }
         public int Tipocont_id { get; set; }
         public int  Conjunto_id { get; set; }
+        public Conjuntos Conjunto_ { get; set; }
     }
 }

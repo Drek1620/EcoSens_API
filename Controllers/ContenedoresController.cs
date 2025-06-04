@@ -94,7 +94,6 @@ namespace EcoSens_API.Controllers
             {
                 var contenedor = _context.Contenedores.Where(contenedor => contenedor.Conjunto_id == conjunto_id).ToList();
 
-
                 if (contenedor == null)
                 {
                     return NotFound("Conjunto no encontrado.");
@@ -153,7 +152,49 @@ namespace EcoSens_API.Controllers
             }
         }
 
-        
+        [HttpGet("conjunto/{id}/contenedores")]
+        public async Task<IActionResult> ObtenerContenedoresPorConjunto(int id)
+        {
+            try
+            {
+                var plastico = await _context.Contenedores
+                    .Where(c => c.Conjunto_id == id && c.Tipocont_id == 1)
+                    .Select(c => new
+                    {
+                        c.Id,
+                        c.Dimensiones,
+                        c.Peso_Total,
+                        c.Estado
+                    })
+                    .FirstOrDefaultAsync();
+
+                var metal = await _context.Contenedores
+                    .Where(c => c.Conjunto_id == id && c.Tipocont_id == 2)
+                    .Select(c => new
+                    {
+                        c.Id,
+                        c.Dimensiones,
+                        c.Peso_Total,
+                        c.Estado
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (plastico == null && metal == null)
+                    return NotFound(new { mensaje = "No se encontraron contenedores para este conjunto." });
+
+                return Ok(new
+                {
+                    conjuntoId = id,
+                    contenedorPlastico = plastico,
+                    contenedorMetal = metal
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al obtener contenedores.", error = ex.Message });
+            }
+        }
+
 
     }
 

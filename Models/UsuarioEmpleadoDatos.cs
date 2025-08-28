@@ -12,7 +12,7 @@
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public string Telefono { get; set; }
-        public int AreaId { get; set; }
+        public int? AreaId { get; set; }
         public string Foto { get; set; }
     }
 }

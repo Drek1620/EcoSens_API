@@ -29,11 +29,11 @@ namespace EcoSens_API.Controllers
         public IActionResult Login([FromBody] UsuarioLoginRequest request)
         {
             var user = _context.Usuarios.Include(u => u.Tipo_).SingleOrDefault(u => u.Correo == request.Correo && u.Contrasena == u.Contrasena);
-            var name = _context.Empleados.SingleOrDefault(x => x.Usuario_id == user.Id);
+            var name = _context.Empleados.SingleOrDefault(x => x.Usuario_Id == user.Id);
             if (user == null)
                 return Unauthorized(new { message = "Credenciales invalidas" });
 
-            var token = GenerarToken(user);
+            var token = GenerarToken(user); 
 
             //Si es ADMIN, devuelve la lista de trabajadores
             return Ok(new
@@ -41,7 +41,7 @@ namespace EcoSens_API.Controllers
                 token,
                 user.Id,
                 user.Tipo_id,
-                name.Nombre
+                //name.Nombre
             });
 
         }

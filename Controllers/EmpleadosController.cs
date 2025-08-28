@@ -24,7 +24,7 @@ namespace EcoSens_API.Controllers
                 .Include(x => x.Area)
                 .Select(x => new EmpleadoUsuario
                 {
-                    Id = x.Usuario_id,
+                    Id = x.Usuario_Id,
                     Nombre = x.Nombre,
                     Apellido = x.Apellido,
                     Correo = x.Usuario_.Correo,
@@ -47,7 +47,7 @@ namespace EcoSens_API.Controllers
                     .Include(e => e.Usuario_)
                         .ThenInclude(u => u.Tipo_)
                     .Include(e => e.Area)
-                    .Where(e => e.Usuario_id == usuarioId)
+                    .Where(e => e.Usuario_Id == usuarioId)
                     .FirstOrDefaultAsync();
 
                 var notificaciones = await _context.Notificaciones
@@ -87,7 +87,7 @@ namespace EcoSens_API.Controllers
                 // Crear Empleado asociado
                 var empleado = new Empleados
                 {
-                    Usuario_id = usuario.Id,
+                    Usuario_Id = usuario.Id,
                     Nombre = dto.Nombre,
                     Apellido = dto.Apellido,
                     Telefono = dto.Telefono,
@@ -118,10 +118,10 @@ namespace EcoSens_API.Controllers
                     .Include(e => e.Usuario_)
                         .ThenInclude(u => u.Tipo_)
                     .Include(e => e.Area)
-                    .Where(e => e.Usuario_id == usuarioId)
+                    .Where(e => e.Usuario_Id == usuarioId)
                     .Select(e => new UsuarioEmpleadoDatos
                     {
-                        UsuarioId = e.Usuario_id,
+                        UsuarioId = e.Usuario_Id,
                         Correo = e.Usuario_.Correo,
                         Contrasena = e.Usuario_.Contrasena,
                         TipoId = e.Usuario_.Tipo_id,
@@ -154,7 +154,7 @@ namespace EcoSens_API.Controllers
             if (usuario == null)
                 return NotFound("Usuario no encontrado");
 
-            var empleado = await _context.Empleados.FirstOrDefaultAsync(x => x.Usuario_id == usuarioId);
+            var empleado = await _context.Empleados.FirstOrDefaultAsync(x => x.Usuario_Id == usuarioId);
             if (empleado == null)
                 return NotFound("Empleado asociado no encontrado");
 
@@ -185,7 +185,7 @@ namespace EcoSens_API.Controllers
             if (usuario == null)
                 return NotFound("Usuario no encontrado");
 
-            var empleado = await _context.Empleados.FirstOrDefaultAsync(x => x.Usuario_id == usuarioId);
+            var empleado = await _context.Empleados.FirstOrDefaultAsync(x => x.Usuario_Id == usuarioId);
 
             // Primero eliminamos el empleado 
             if (empleado != null)

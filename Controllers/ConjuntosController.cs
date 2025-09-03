@@ -30,11 +30,11 @@ namespace EcoSens_API.Controllers
                 {
                     Mac_ESP32 = dto.Mac_ESP32,
                     Clavesecreta = dto.Clavesecreta,
-                    Area_id = dto.Area_id
+                    Area_Id = dto.Area_Id
                 };
 
                 _context.Conjuntos.Add(nuevoConjunto);
-                await _context.SaveChangesAsync();
+                int result = _context.SaveChanges();
 
                 // 2. Crear los contenedores con la relación al nuevo conjunto
                 foreach (var cont in dto.Contenedores)
@@ -104,7 +104,7 @@ namespace EcoSens_API.Controllers
 
                 // Obtener los conjuntos asociados
                 var conjuntos = await _context.Conjuntos
-                    .Where(c => c.Area_id == areaId)
+                    .Where(c => c.Area_Id == areaId)
                     .Select(conjunto => new
                     {
                         Id = conjunto.Id,

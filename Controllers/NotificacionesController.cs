@@ -130,7 +130,7 @@ namespace EcoSens_API.Controllers
                           (noti, cont) => new
                           {
                               Fecha = noti.Fecha,
-                              ConjuntoId = cont.Conjunto_id
+                              ConjuntoId = cont.Conjunto_Id
                           })
                     .Where(x => x.ConjuntoId == conjuntoId)
                     .GroupBy(x => x.Fecha)

@@ -40,8 +40,8 @@ namespace EcoSens_API.Controllers
                     Dimensiones = contenedores.Dimensiones,
                     Peso_Total = contenedores.Peso_Total,
                     Estado = contenedores.Estado,
-                    Tipocont_id = contenedores.Tipocont_id,
-                    Conjunto_id = contenedores.Conjunto_id
+                    Tipocont_Id = contenedores.Tipocont_Id,
+                    Conjunto_Id = contenedores.Conjunto_Id
 
 
                 };
@@ -92,7 +92,7 @@ namespace EcoSens_API.Controllers
         {
             try
             {
-                var contenedor = _context.Contenedores.Where(contenedor => contenedor.Conjunto_id == conjunto_id).ToList();
+                var contenedor = _context.Contenedores.Where(contenedor => contenedor.Conjunto_Id == conjunto_id).ToList();
 
                 if (contenedor == null)
                 {
@@ -158,7 +158,7 @@ namespace EcoSens_API.Controllers
             try
             {
                 var plastico = await _context.Contenedores
-                    .Where(c => c.Conjunto_id == id && c.Tipocont_id == 1)
+                    .Where(c => c.Conjunto_Id == id && c.Tipocont_Id == 1)
                     .Select(c => new
                     {
                         c.Id,
@@ -169,7 +169,7 @@ namespace EcoSens_API.Controllers
                     .FirstOrDefaultAsync();
 
                 var metal = await _context.Contenedores
-                    .Where(c => c.Conjunto_id == id && c.Tipocont_id == 2)
+                    .Where(c => c.Conjunto_Id == id && c.Tipocont_Id == 2)
                     .Select(c => new
                     {
                         c.Id,

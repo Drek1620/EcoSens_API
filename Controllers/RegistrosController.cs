@@ -82,7 +82,7 @@ namespace EcoSens_API.Controllers
                                        on registro.Id_contenedor equals contenedor.Id
                                        select new
                                        {
-                                           Tipo = contenedor.Tipocont_id,
+                                           Tipo = contenedor.Tipocont_Id,
                                            Peso = registro.Peso
                                        };
 
@@ -151,7 +151,7 @@ namespace EcoSens_API.Controllers
                                        {
                                            Fecha = registro.FechaYHora,
                                            Peso = registro.Peso,
-                                           Tipo = cont.Tipocont_id // 1 = Plástico, 2 = Metal
+                                           Tipo = cont.Tipocont_Id // 1 = Plástico, 2 = Metal
                                        };
 
                 // Limitar a los últimos 6 meses

@@ -39,7 +39,7 @@ namespace EcoSens_API.Controllers
                 // 2. Crear los contenedores con la relación al nuevo conjunto
                 foreach (var cont in dto.Contenedores)
                 {
-                    cont.Conjunto_id = nuevoConjunto.Id;
+                    cont.Conjunto_Id = nuevoConjunto.Id;
                     _context.Contenedores.Add(cont);
                 }
 
@@ -112,12 +112,12 @@ namespace EcoSens_API.Controllers
                         Clavesecreta = conjunto.Clavesecreta,
 
                         Contenedor_plastico = _context.Contenedores
-                            .Where(ct => ct.Conjunto_id == conjunto.Id && ct.Tipocont_id == 1)
+                            .Where(ct => ct.Conjunto_Id == conjunto.Id && ct.Tipocont_Id == 1)
                             .Select(ct => ct.Estado)
                             .FirstOrDefault(),
 
                         Contenedor_metal = _context.Contenedores
-                            .Where(ct => ct.Conjunto_id == conjunto.Id && ct.Tipocont_id == 2)
+                            .Where(ct => ct.Conjunto_Id == conjunto.Id && ct.Tipocont_Id == 2)
                             .Select(ct => ct.Estado)
                             .FirstOrDefault()
                     })

@@ -33,6 +33,13 @@ namespace EcoSens_API.Controllers
                     Area_Id = dto.Area_Id
                 };
 
+                var existe = await _context.Conjuntos.AnyAsync(c => c.Mac_ESP32 == dto.Mac_ESP32);
+
+                if (existe)
+                {
+                    return BadRequest(new { mensaje = "La MAC ya existe en la base de datos." });
+                }
+
                 _context.Conjuntos.Add(nuevoConjunto);
                 int result = _context.SaveChanges();
 

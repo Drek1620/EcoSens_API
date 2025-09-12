@@ -177,6 +177,36 @@ namespace EcoSens_API.Controllers
             }
         }
 
+        [HttpGet("conjunto-con-contenedores/{id}")]
+        public async Task<IActionResult> ObtenerConjuntoConContenedores(int id)
+        {
+            try
+            {
+                var conjunto = await _context.Conjuntos
+                    .Include(c => c.Contenedores) // Incluye los contenedores relacionados
+                    .FirstOrDefaultAsync(c => c.Id == id);
+
+                if (conjunto == null)
+                {
+                    return NotFound(new { mensaje = "No se encontró el conjunto." });
+                }
+
+                // Convertir a DTO (opcional, pero recomendado para no exponer todo el modelo)
+                var dto = new ConjuntoConContenedoresDto
+                {
+                    Mac_ESP32 = conjunto.Mac_ESP32,
+                    Clavesecreta = conjunto.Clavesecreta,
+                    Area_Id = conjunto.Area_Id,
+                    Contenedores = conjunto.Contenedores.ToList()
+                };
+
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al obtener los datos.", error = ex.Message });
+            }
+        }
 
 
     }

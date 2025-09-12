@@ -71,7 +71,7 @@ namespace EcoSens_API.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Conjuntos>> GetConjuntosById(int id)
+        public async Task<ActionResult<ConjuntoConContenedoresDto>> GetConjuntosById(int id)
         {
 
             try
@@ -85,18 +85,49 @@ namespace EcoSens_API.Controllers
                     return NotFound(new { mensaje = "Conjunto no encontrado." });
                 }
 
-                return Ok(new
-                {
-                    conjunto.Id,
-                    conjunto.Mac_ESP32,
-                    conjunto.Clavesecreta,
-                    Area = conjunto.Area_ != null ? conjunto.Area_.Nombre : null
-                });
+                var ConjuntoConContenedores = await _context.Conjuntos
+                    .Where(c => c.Id == id)
+                    .Select(c => new ConjuntoConContenedoresDto
+                    {
+                        Mac_ESP32 = c.Mac_ESP32,
+                        Clavesecreta = c.Clavesecreta,
+                        Area_Id = c.Area_Id,
+                        Contenedores = _context.Contenedores
+                            .Where(ct => ct.Conjunto_Id == c.Id)
+                            .ToList()
+                    })
+                    .FirstOrDefaultAsync();
+
+                return Ok(ConjuntoConContenedores);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { mensaje = "Error interno del servidor.", error = ex.Message });
             }
+        }
+
+        [HttpPut("editar-conjunto-contenedor")]
+        public async Task<IActionResult> EditarConjuntoConContenedor([FromBody] ConjuntoConContenedoresDto dto)
+        {
+
+            var conjunto = await _context.Conjuntos.FirstOrDefaultAsync(x => x.Id == dto.Id);
+            conjunto.Mac_ESP32 = dto.Mac_ESP32;
+            conjunto.Clavesecreta = dto.Clavesecreta;
+            conjunto.Area_Id = dto.Area_Id;
+            _context.SaveChanges();
+
+            var contenedores = await _context.Contenedores.Where(x => x.Conjunto_Id == dto.Id).ToListAsync();
+            foreach (var contenedor in contenedores)
+            {
+                var contenedorDto = dto.Contenedores.FirstOrDefault(c => c.Id == contenedor.Id);
+                if (contenedorDto != null)
+                {
+                    contenedor.Tipocont_Id = contenedorDto.Tipocont_Id;
+                    contenedor.Estado = contenedorDto.Estado;
+                }
+            }
+            _context.SaveChanges();
+            return Ok(dto);
         }
 
         [HttpGet("area/{areaId}/conjuntos-estados")]

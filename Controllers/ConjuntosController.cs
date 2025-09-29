@@ -208,6 +208,52 @@ namespace EcoSens_API.Controllers
             }
         }
 
+        [HttpPut("editar-conjunto-contenedores/{id}")]
+        public async Task<IActionResult> EditarConjuntoConContenedores(int id, [FromBody] ConjuntoConContenedoresDto dto)
+        {
+            var conjunto = await _context.Conjuntos.FirstOrDefaultAsync(x => x.Id == id);
 
+            try
+            {
+                // 1. Crear el conjunto
+                var nuevoConjunto = new Conjuntos
+                {
+                    Mac_ESP32 = dto.Mac_ESP32,
+                    Clavesecreta = dto.Clavesecreta,
+                    Area_Id = dto.Area_Id
+                };
+
+                var existe = await _context.Conjuntos.AnyAsync(c => c.Mac_ESP32 == dto.Mac_ESP32);
+
+                if (existe)
+                {
+                    return BadRequest(new { mensaje = "La MAC ya existe en la base de datos." });
+                }
+                conjunto = nuevoConjunto;
+                int result = _context.SaveChanges();
+
+                var contenedores = _context.Contenedores.Where(c => c.Conjunto_Id == id).ToList();
+                // 2. Crear los contenedores con la relación al nuevo conjunto
+                
+                contenedores.FirstOrDefault(x => x.Tipocont_Id == 1).Dimensiones = dto.Contenedores.FirstOrDefault(x => x.Tipocont_Id == 1).Dimensiones;
+
+                contenedores.FirstOrDefault(contenedores => contenedores.Tipocont_Id == 1).Peso_Total = dto.Contenedores.FirstOrDefault(x => x.Tipocont_Id == 1).Peso_Total;
+
+                contenedores.FirstOrDefault(x => x.Tipocont_Id == 2).Dimensiones = dto.Contenedores.FirstOrDefault(x => x.Tipocont_Id == 2).Dimensiones;
+                contenedores.FirstOrDefault(contenedores => contenedores.Tipocont_Id == 2).Peso_Total = dto.Contenedores.FirstOrDefault(x => x.Tipocont_Id == 2).Peso_Total;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    conjuntoId = nuevoConjunto.Id,
+                    contenedoresAgregados = dto.Contenedores.Count
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { mensaje = "Error al insertar datos.", error = ex.Message });
+            }
+        }
     }
 }
